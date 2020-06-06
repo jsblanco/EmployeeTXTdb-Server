@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const employeeDb = "./database/employees.txt";
+const retrieveDb = require("./../helpers/retrieveDb");
+const originalDbData = require("./../helpers/originalDbData")
 import { Request, Response, NextFunction } from "express";
 interface employeeI extends Array<Object> {
   [index: number]: {
@@ -15,9 +17,9 @@ interface employeeI extends Array<Object> {
   };
 }
 
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/", (req: Request, res: Response, next: NextFunction) => {
   try {
-    const employees = fileToString(employeeDb);
+    const employees = retrieveDb(employeeDb);
     res.status(200).json(employees);
   } catch (error) {
     next(error);
@@ -28,21 +30,15 @@ router.post(
   "/add-employee",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-
-      const firstName = req.body.firstName
-        ? req.body.firstName.trim()
-        : "";
+      const firstName = req.body.firstName ? req.body.firstName.trim() : "";
       const lastName = req.body.lastName ? req.body.lastName.trim() : "";
       const address = req.body.address ? req.body.address.trim() : "";
       const phoneNumber = req.body.phoneNumber
         ? req.body.phoneNumber.trim()
         : "";
       const email = req.body.email ? req.body.email.trim() : "";
-      const birthDate = req.body.birthDate
-        ? req.body.birthDate.trim()
-        : "";
+      const birthDate = req.body.birthDate ? req.body.birthDate.trim() : "";
       const missingFields: string[] = [];
-
 
       switch ("") {
         case firstName:
@@ -74,10 +70,12 @@ router.post(
         res.status(401).json(errorMessage);
       }
 
-
-      const employees = fileToString(employeeDb);
+      const employees = retrieveDb(employeeDb);
       fs.appendFile(
-        employeeDb, `${1+employees[employees.length-2].id},${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`,
+        employeeDb,
+        `${
+          1 + employees[employees.length - 2].id
+        },${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`,
         function (err: any) {
           if (err) {
             res.status(400).json("Error adding employee data to user Db.");
@@ -91,25 +89,17 @@ router.post(
   }
 );
 
-function fileToString(filepath: string): employeeI {
-  const employees = fs.readFileSync(filepath);
-  const userDb: employeeI = [];
-  employees
-    .toString()
-    .split("\n")
-    .forEach((user: string, index: number) => {
-      let userData = user.split(",");
-      userDb[index] = {
-        id: parseInt(userData[0]),
-        firstName: userData[1],
-        lastName: userData[2],
-        address: userData[3],
-        phoneNumber: userData[4],
-        email: userData[5],
-        birthDate: userData[6],
-      };
-    });
-  return userDb;
-}
+router.get("/reset", (req: Request, res: Response, next: NextFunction) => {
+    try {
+      fs.writeFile(employeeDb, originalDbData, 'utf-8', function(err) {
+            if (err) throw err;
+        })
+      const employees = retrieveDb(employeeDb);
+      res.status(200).json(employees);
+    } catch (error) {
+      next(error);
+    }
+  });
+
 
 module.exports = router;
