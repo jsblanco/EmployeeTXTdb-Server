@@ -11,12 +11,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
+const employeeDb = "./database/employees.txt";
 router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.status(200).json("");
+        const employees = fileToString(employeeDb);
+        res.status(200).json(employees);
     }
     catch (error) {
         next(error);
     }
 }));
+function fileToString(filepath) {
+    const employees = fs.readFileSync(filepath);
+    const userDb = [];
+    employees.toString().split("\n").forEach((user, index) => {
+        let userData = user.split(",");
+        userDb[index] = {
+            _id: parseInt(userData[0]),
+            firstName: userData[1],
+            lastName: userData[2],
+            address: userData[3],
+            accountNum: userData[4],
+            email: userData[5],
+            birthDate: userData[6]
+        };
+    });
+    return userDb;
+}
 module.exports = router;
