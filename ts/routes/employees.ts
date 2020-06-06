@@ -6,18 +6,6 @@ const retrieveDb = require("./../helpers/retrieveDb");
 const originalDbData = require("./../helpers/originalDbData");
 const digestDbEntries = require("./../helpers/digestDbEntries");
 import { Request, Response, NextFunction } from "express";
-interface Employee extends Object {
-  id: number;
-  firstName: string;
-  lastName: string;
-  address: string;
-  phoneNumber: string;
-  email: string;
-  birthDate: string;
-}
-interface employeeArr extends Array<Object> {
-  [index: number]: Employee;
-}
 
 router.get("/", (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -101,7 +89,7 @@ router.post(
 
 router.get("/reset", (req: Request, res: Response, next: NextFunction) => {
   try {
-    fs.writeFile(employeeDb, originalDbData, "utf-8", function (err) {
+    fs.writeFile(employeeDb, originalDbData, "utf-8", function (err: Error) {
       if (err) throw err;
     });
     const employees = digestDbEntries(originalDbData);
@@ -135,7 +123,7 @@ router.put(
         employeeDb,
         databaseWithoutDeletedEmployee,
         "utf-8",
-        function (err) {
+        function (err: Error) {
           if (err) throw err;
         }
       );
