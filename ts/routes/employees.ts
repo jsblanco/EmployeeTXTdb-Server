@@ -3,19 +3,20 @@ const router = express.Router();
 const fs = require("fs");
 const employeeDb = "./database/employees.txt";
 const retrieveDb = require("./../helpers/retrieveDb");
-const originalDbData = require("./../helpers/originalDbData")
+const originalDbData = require("./../helpers/originalDbData");
 const digestDbEntries = require("./../helpers/digestDbEntries");
 import { Request, Response, NextFunction } from "express";
-interface employeeI extends Array<Object> {
-  [index: number]: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    address: string;
-    phoneNumber: string;
-    email: string;
-    birthDate: string;
-  };
+interface Employee extends Object {
+  id: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  birthDate: string;
+}
+interface employeeArr extends Array<Object> {
+  [index: number]: Employee;
 }
 
 router.get("/", (req: Request, res: Response, next: NextFunction) => {
@@ -83,34 +84,68 @@ router.post(
           }
         }
       );
-      res.status(200).json(
-        {
-            id: (1 + employees[employees.length - 1].id),
-            firstName,
-            lastName,
-            address,
-            phoneNumber,
-            email,
-            birthDate,
-          }
-      );
+      res.status(200).json({
+        id: 1 + employees[employees.length - 1].id,
+        firstName,
+        lastName,
+        address,
+        phoneNumber,
+        email,
+        birthDate,
+      });
     } catch (error) {
       next(error);
     }
   }
 );
 
-router.get("/reset", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/reset", (req: Request, res: Response, next: NextFunction) => {
+  try {
+    fs.writeFile(employeeDb, originalDbData, "utf-8", function (err) {
+      if (err) throw err;
+    });
+    const employees = digestDbEntries(originalDbData);
+    res.status(200).json(employees);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put(
+  "/delete-employee/:userId",
+  (req: Request, res: Response, next: NextFunction) => {
     try {
-        fs.writeFile(employeeDb, originalDbData, 'utf-8', function(err) {
-            if (err) throw err;
-        })
-      const employees = digestDbEntries(originalDbData);
-      res.status(200).json(employees);
+      const userId = +req.params.userId;
+      const employees = retrieveDb(employeeDb);
+      const deletedEmployeeIndex = employees.findIndex(
+        (employee: Employee) => employee.id == userId
+      );
+      if (deletedEmployeeIndex == -1) {
+        res
+          .status(401)
+          .json(`There is no employee with ID ${userId} on the database`);
+      }
+      employees.splice(deletedEmployeeIndex, 1);
+      let databaseWithoutDeletedEmployee: string = "";
+      employees.forEach((employee: Employee) => {
+        let userData = `${employee.id},${employee.firstName},${employee.lastName},${employee.address},${employee.phoneNumber},${employee.email},${employee.birthDate}\n`;
+        databaseWithoutDeletedEmployee += userData;
+      });
+      fs.writeFile(
+        employeeDb,
+        databaseWithoutDeletedEmployee,
+        "utf-8",
+        function (err) {
+          if (err) throw err;
+        }
+      );
+      res
+        .status(200)
+        .json(employees);
     } catch (error) {
       next(error);
     }
-  });
-
+  }
+);
 
 module.exports = router;

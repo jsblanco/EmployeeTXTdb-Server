@@ -1,5 +1,5 @@
-module.exports = (employeeData: string): employeeI => {
-    const userDb: employeeI = [];
+module.exports = (employeeData: string): employeeArr => {
+    const userDb: employeeArr = [];
     employeeData
       .toString()
       .split("\n")

@@ -71,7 +71,7 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
             }
         });
         res.status(200).json({
-            id: (1 + employees[employees.length - 1].id),
+            id: 1 + employees[employees.length - 1].id,
             firstName,
             lastName,
             address,
@@ -84,9 +84,9 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
         next(error);
     }
 }));
-router.get("/reset", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/reset", (req, res, next) => {
     try {
-        fs.writeFile(employeeDb, originalDbData, 'utf-8', function (err) {
+        fs.writeFile(employeeDb, originalDbData, "utf-8", function (err) {
             if (err)
                 throw err;
         });
@@ -96,5 +96,33 @@ router.get("/reset", (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     catch (error) {
         next(error);
     }
-}));
+});
+router.put("/delete-employee/:userId", (req, res, next) => {
+    try {
+        const userId = +req.params.userId;
+        const employees = retrieveDb(employeeDb);
+        const deletedEmployeeIndex = employees.findIndex((employee) => employee.id == userId);
+        if (deletedEmployeeIndex == -1) {
+            res
+                .status(401)
+                .json(`There is no employee with ID ${userId} on the database`);
+        }
+        employees.splice(deletedEmployeeIndex, 1);
+        let databaseWithoutDeletedEmployee = "";
+        employees.forEach((employee) => {
+            let userData = `${employee.id},${employee.firstName},${employee.lastName},${employee.address},${employee.phoneNumber},${employee.email},${employee.birthDate}\n`;
+            databaseWithoutDeletedEmployee += userData;
+        });
+        fs.writeFile(employeeDb, databaseWithoutDeletedEmployee, "utf-8", function (err) {
+            if (err)
+                throw err;
+        });
+        res
+            .status(200)
+            .json(employees);
+    }
+    catch (error) {
+        next(error);
+    }
+});
 module.exports = router;
