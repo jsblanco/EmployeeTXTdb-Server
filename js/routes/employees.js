@@ -66,7 +66,7 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
             res.status(401).json(errorMessage);
         }
         const employees = fileToString(employeeDb);
-        fs.appendFile(employeeDb, `${employees.length},${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`, function (err) {
+        fs.appendFile(employeeDb, `${1 + employees[employees.length - 2].id},${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`, function (err) {
             if (err) {
                 res.status(400).json("Error adding employee data to user Db.");
             }
