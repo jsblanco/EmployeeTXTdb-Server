@@ -4,6 +4,7 @@ const fs = require("fs");
 const employeeDb = "./database/employees.txt";
 const retrieveDb = require("./../helpers/retrieveDb");
 const originalDbData = require("./../helpers/originalDbData")
+const digestDbEntries = require("./../helpers/digestDbEntries");
 import { Request, Response, NextFunction } from "express";
 interface employeeI extends Array<Object> {
   [index: number]: {
@@ -74,7 +75,7 @@ router.post(
       fs.appendFile(
         employeeDb,
         `${
-          1 + employees[employees.length - 2].id
+          1 + employees[employees.length - 1].id
         },${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`,
         function (err: any) {
           if (err) {
@@ -82,19 +83,29 @@ router.post(
           }
         }
       );
-      res.status(200).json(employees);
+      res.status(200).json(
+        {
+            id: (1 + employees[employees.length - 1].id),
+            firstName,
+            lastName,
+            address,
+            phoneNumber,
+            email,
+            birthDate,
+          }
+      );
     } catch (error) {
       next(error);
     }
   }
 );
 
-router.get("/reset", (req: Request, res: Response, next: NextFunction) => {
+router.get("/reset", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      fs.writeFile(employeeDb, originalDbData, 'utf-8', function(err) {
+        fs.writeFile(employeeDb, originalDbData, 'utf-8', function(err) {
             if (err) throw err;
         })
-      const employees = retrieveDb(employeeDb);
+      const employees = digestDbEntries(originalDbData);
       res.status(200).json(employees);
     } catch (error) {
       next(error);

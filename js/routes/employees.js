@@ -15,6 +15,7 @@ const fs = require("fs");
 const employeeDb = "./database/employees.txt";
 const retrieveDb = require("./../helpers/retrieveDb");
 const originalDbData = require("./../helpers/originalDbData");
+const digestDbEntries = require("./../helpers/digestDbEntries");
 router.get("/", (req, res, next) => {
     try {
         const employees = retrieveDb(employeeDb);
@@ -64,28 +65,36 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
             res.status(401).json(errorMessage);
         }
         const employees = retrieveDb(employeeDb);
-        fs.appendFile(employeeDb, `${1 + employees[employees.length - 2].id},${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`, function (err) {
+        fs.appendFile(employeeDb, `${1 + employees[employees.length - 1].id},${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`, function (err) {
             if (err) {
                 res.status(400).json("Error adding employee data to user Db.");
             }
         });
+        res.status(200).json({
+            id: (1 + employees[employees.length - 1].id),
+            firstName,
+            lastName,
+            address,
+            phoneNumber,
+            email,
+            birthDate,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+router.get("/reset", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        fs.writeFile(employeeDb, originalDbData, 'utf-8', function (err) {
+            if (err)
+                throw err;
+        });
+        const employees = digestDbEntries(originalDbData);
         res.status(200).json(employees);
     }
     catch (error) {
         next(error);
     }
 }));
-router.get("/reset", (req, res, next) => {
-    try {
-        fs.writeFile(employeeDb, originalDbData, 'utf-8', function (err) {
-            if (err)
-                throw err;
-        });
-        const employees = retrieveDb(employeeDb);
-        res.status(200).json(employees);
-    }
-    catch (error) {
-        next(error);
-    }
-});
 module.exports = router;
