@@ -72,7 +72,7 @@ router.post(
           }
         }
       );
-      res.status(200).json({
+      res.status(200).json([...employees, {
         id: 1 + employees[employees.length - 1].id,
         firstName,
         lastName,
@@ -80,7 +80,7 @@ router.post(
         phoneNumber,
         email,
         birthDate,
-      });
+      }]);
     } catch (error) {
       next(error);
     }

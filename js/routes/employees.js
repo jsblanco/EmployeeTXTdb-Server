@@ -70,15 +70,15 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
                 res.status(400).json("Error adding employee data to user Db.");
             }
         });
-        res.status(200).json({
-            id: 1 + employees[employees.length - 1].id,
-            firstName,
-            lastName,
-            address,
-            phoneNumber,
-            email,
-            birthDate,
-        });
+        res.status(200).json([...employees, {
+                id: 1 + employees[employees.length - 1].id,
+                firstName,
+                lastName,
+                address,
+                phoneNumber,
+                email,
+                birthDate,
+            }]);
     }
     catch (error) {
         next(error);
