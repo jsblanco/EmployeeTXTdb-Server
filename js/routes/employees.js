@@ -27,7 +27,6 @@ router.get("/", (req, res, next) => {
 });
 router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.body);
         const firstName = req.body.data.firstName ? req.body.data.firstName.trim() : "";
         const lastName = req.body.data.lastName ? req.body.data.lastName.trim() : "";
         const address = req.body.data.address ? req.body.data.address.trim() : "";
@@ -35,7 +34,7 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
             ? req.body.data.phoneNumber.trim()
             : "";
         const email = req.body.data.email ? req.body.data.email.trim() : "";
-        const birthDate = req.body.data.birthDate ? `${req.body.data.birthDate.trim().substring(8, 10)}/${req.body.data.birthDate.trim().substring(5, 7)}/${req.body.data.birthDate.trim().substring(0, 4)}` : "";
+        const birthDate = req.body.data.birthDate ? `${req.body.data.birthDate.trim().substring(5, 7)}/${req.body.data.birthDate.trim().substring(8, 10)}/${req.body.data.birthDate.trim().substring(0, 4)}` : "";
         const missingFields = [];
         switch ("") {
             case firstName:
