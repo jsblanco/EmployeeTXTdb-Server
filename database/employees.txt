@@ -1,3 +1,6 @@
+1,Della,Cox,"4945 Lucky Duck Drive",412-862-8457,DellaDCox@superrito.com,10/12/1985
+3,Ron,Plaza,"4738 Woodside Circle",850-868-3521,RonAPlaza@dayrep.com,3/30/1990
+4,Emma,Kwak,"4190 Tully Street",313-651-6614,EmmaAKwak@cuvox.de,3/12/1940
 5,Jimmy,Smith,"3839 Fulton Street",304-405-5250,JimmyTSmith@jourrapide.com,2/25/1953
 6,Cecilia,Temple,"4187 Arrowood Drive",904-495-3469,CeciliaGTemple@gustr.com,8/24/1987
 7,Ruth,Story,"3474 White Oak Drive",816-761-4637,RuthPStory@dayrep.com,11/28/1963
@@ -23,3 +26,4 @@
 27,Nancy,Villarreal,"4347 Todds Lane",210-465-6307,NancyNVillarreal@armyspy.com,9/21/1959
 28,Colby,Lincoln,"426 Bryan Street",336-284-1978,ColbyVLincoln@superrito.com,4/8/1996
 29,Robert,Retzlaff,"1858 Water Street",925-250-0317,RobertKRetzlaff@superrito.com,6/20/1951
+30,Donald,Schmidt,"1925 Mattson Street",503-431-9711,DonaldBSchmidt@rhyta.com,11/27/1952

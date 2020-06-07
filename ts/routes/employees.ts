@@ -87,7 +87,7 @@ router.post(
   }
 );
 
-router.get("/reset", (req: Request, res: Response, next: NextFunction) => {
+router.put("/reset", (req: Request, res: Response, next: NextFunction) => {
   try {
     fs.writeFile(employeeDb, originalDbData, "utf-8", function (err: Error) {
       if (err) throw err;
@@ -99,7 +99,7 @@ router.get("/reset", (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-router.put(
+router.delete(
   "/delete-employee/:userId",
   (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -84,7 +84,7 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
         next(error);
     }
 }));
-router.get("/reset", (req, res, next) => {
+router.put("/reset", (req, res, next) => {
     try {
         fs.writeFile(employeeDb, originalDbData, "utf-8", function (err) {
             if (err)
@@ -97,7 +97,7 @@ router.get("/reset", (req, res, next) => {
         next(error);
     }
 });
-router.put("/delete-employee/:userId", (req, res, next) => {
+router.delete("/delete-employee/:userId", (req, res, next) => {
     try {
         const userId = +req.params.userId;
         const employees = retrieveDb(employeeDb);
