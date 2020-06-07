@@ -19,7 +19,6 @@ const digestDbEntries = require("./../helpers/digestDbEntries");
 router.get("/", (req, res, next) => {
     try {
         const employees = retrieveDb(employeeDb);
-        res.set("Access-Control-Allow-Origin", "*");
         res.status(200).json(employees);
     }
     catch (error) {
@@ -28,14 +27,15 @@ router.get("/", (req, res, next) => {
 });
 router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const firstName = req.body.firstName ? req.body.firstName.trim() : "";
-        const lastName = req.body.lastName ? req.body.lastName.trim() : "";
-        const address = req.body.address ? req.body.address.trim() : "";
-        const phoneNumber = req.body.phoneNumber
-            ? req.body.phoneNumber.trim()
+        console.log(req.body);
+        const firstName = req.body.data.firstName ? req.body.data.firstName.trim() : "";
+        const lastName = req.body.data.lastName ? req.body.data.lastName.trim() : "";
+        const address = req.body.data.address ? req.body.data.address.trim() : "";
+        const phoneNumber = req.body.data.phoneNumber
+            ? req.body.data.phoneNumber.trim()
             : "";
-        const email = req.body.email ? req.body.email.trim() : "";
-        const birthDate = req.body.birthDate ? req.body.birthDate.trim() : "";
+        const email = req.body.data.email ? req.body.data.email.trim() : "";
+        const birthDate = req.body.data.birthDate ? `${req.body.data.birthDate.trim().substring(8, 10)}/${req.body.data.birthDate.trim().substring(5, 7)}/${req.body.data.birthDate.trim().substring(0, 4)}` : "";
         const missingFields = [];
         switch ("") {
             case firstName:
@@ -63,15 +63,14 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
                     errorMessage += error + ", ";
                 }
             });
-            res.status(401).json(errorMessage);
+            return res.status(401).json(errorMessage);
         }
         const employees = retrieveDb(employeeDb);
         fs.appendFile(employeeDb, `${1 + employees[employees.length - 1].id},${firstName},${lastName},${address},${phoneNumber},${email},${birthDate}\n`, function (err) {
             if (err) {
-                res.status(400).json("Error adding employee data to user Db.");
+                return res.status(400).json("Error adding employee data to user Db.");
             }
         });
-        res.set("Access-Control-Allow-Origin", "*");
         res.status(200).json([...employees, {
                 id: 1 + employees[employees.length - 1].id,
                 firstName,
@@ -93,7 +92,6 @@ router.put("/reset", (req, res, next) => {
                 throw err;
         });
         const employees = digestDbEntries(originalDbData);
-        res.set("Access-Control-Allow-Origin", "*");
         res.status(200).json(employees);
     }
     catch (error) {
@@ -120,7 +118,6 @@ router.delete("/delete-employee/:userId", (req, res, next) => {
             if (err)
                 throw err;
         });
-        res.set("Access-Control-Allow-Origin", "*");
         res
             .status(200)
             .json(employees);
