@@ -10,6 +10,7 @@ import { Request, Response, NextFunction } from "express";
 router.get("/", (req: Request, res: Response, next: NextFunction) => {
   try {
     const employees = retrieveDb(employeeDb);
+    res.set("Access-Control-Allow-Origin", "*");
     res.status(200).json(employees);
   } catch (error) {
     next(error);
@@ -72,6 +73,7 @@ router.post(
           }
         }
       );
+      res.set("Access-Control-Allow-Origin", "*");
       res.status(200).json([...employees, {
         id: 1 + employees[employees.length - 1].id,
         firstName,
@@ -93,6 +95,7 @@ router.put("/reset", (req: Request, res: Response, next: NextFunction) => {
       if (err) throw err;
     });
     const employees = digestDbEntries(originalDbData);
+    res.set("Access-Control-Allow-Origin", "*");
     res.status(200).json(employees);
   } catch (error) {
     next(error);
@@ -127,6 +130,7 @@ router.delete(
           if (err) throw err;
         }
       );
+      res.set("Access-Control-Allow-Origin", "*");
       res
         .status(200)
         .json(employees);

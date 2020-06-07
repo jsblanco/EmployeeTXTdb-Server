@@ -10,7 +10,7 @@ const employeesRouter = require('./routes/employees');
 const app = express();
 app.use(cors({
     credentials: true,
-    origin: ["https://localhost:3000"],
+    origin: ["http://localhost:3000"],
 }));
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');

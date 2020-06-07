@@ -19,6 +19,7 @@ const digestDbEntries = require("./../helpers/digestDbEntries");
 router.get("/", (req, res, next) => {
     try {
         const employees = retrieveDb(employeeDb);
+        res.set("Access-Control-Allow-Origin", "*");
         res.status(200).json(employees);
     }
     catch (error) {
@@ -70,6 +71,7 @@ router.post("/add-employee", (req, res, next) => __awaiter(void 0, void 0, void 
                 res.status(400).json("Error adding employee data to user Db.");
             }
         });
+        res.set("Access-Control-Allow-Origin", "*");
         res.status(200).json([...employees, {
                 id: 1 + employees[employees.length - 1].id,
                 firstName,
@@ -91,6 +93,7 @@ router.put("/reset", (req, res, next) => {
                 throw err;
         });
         const employees = digestDbEntries(originalDbData);
+        res.set("Access-Control-Allow-Origin", "*");
         res.status(200).json(employees);
     }
     catch (error) {
@@ -117,6 +120,7 @@ router.delete("/delete-employee/:userId", (req, res, next) => {
             if (err)
                 throw err;
         });
+        res.set("Access-Control-Allow-Origin", "*");
         res
             .status(200)
             .json(employees);
